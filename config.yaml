@@ -1,0 +1,48 @@
+# ============================================================
+# AI Citation Tracker — Config
+# Edit this file for every new brand / client you track.
+# ============================================================
+
+# The brand you're tracking citations for.
+# Add common variations (short name, full name, misspellings)
+# so detection doesn't miss valid mentions.
+brand:
+  name: "VMware"
+  aliases:
+    - "VMware by Broadcom"
+    - "vSphere"
+    - "VMware Cloud"
+
+# Competitors to track in the same responses (optional but recommended —
+# shows who AI engines cite INSTEAD of your brand).
+competitors:
+  - "Nutanix"
+  - "Microsoft Hyper-V"
+  - "Proxmox"
+  - "Red Hat OpenShift Virtualization"
+  - "Citrix Hypervisor"
+
+# The queries you want to test — write these the way a real user would
+# type them into ChatGPT / Perplexity / AI Overviews. Mix informational,
+# comparison, and "best X for Y" queries — these are where AI Overviews
+# and LLM answers most often cite specific brands.
+queries:
+  - "best server virtualization platform for enterprise"
+  - "VMware vs Nutanix which is better for private cloud"
+  - "top hypervisors for enterprise data centers 2026"
+  - "how to migrate from VMware to another virtualization platform"
+  - "most reliable virtualization software for large enterprises"
+
+# Which providers to query. Set to false to skip one (e.g. no API key yet).
+providers:
+  openai: true
+  anthropic: true
+  perplexity: true
+  gemini: true
+
+# Model names — change if you want a cheaper/faster/newer model.
+models:
+  openai: "gpt-4o-mini"
+  anthropic: "claude-3-5-haiku-20241022"
+  perplexity: "sonar"
+  gemini: "gemini-2.0-flash"
