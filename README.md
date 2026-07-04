@@ -142,10 +142,3 @@ ai-citation-tracker/
 ```
 
 ---
-
-## For your resume / portfolio
-
-Suggested bullet:
-> Built an automated AI Citation Tracker (Python) monitoring brand visibility and citation position across ChatGPT, Claude, Perplexity, and Gemini — surfacing competitor share-of-voice in generative search responses to inform GEO strategy.
-
-Push this to a public GitHub repo and link it directly from your resume/LinkedIn — a working tool with a clean README is a much stronger signal than listing "GEO" as a skill.
