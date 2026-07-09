@@ -34,11 +34,19 @@ queries:
   - "most reliable virtualization software for large enterprises"
 
 # Which providers to query. Set to false to skip one (e.g. no API key yet).
+#
+# NOTE — groq and openrouter run mostly open-source models. They're
+# useful for free pipeline testing and as extra data points, but they
+# don't power a real consumer AI-search product the way ChatGPT/Claude/
+# Gemini/Perplexity do — keep that in mind when interpreting their
+# citation rate in a client-facing report.
 providers:
   openai: true
   anthropic: true
   perplexity: true
   gemini: true
+  groq: true
+  openrouter: false
 
 # Model names — change if you want a cheaper/faster/newer model.
 models:
@@ -46,3 +54,5 @@ models:
   anthropic: "claude-3-5-haiku-20241022"
   perplexity: "sonar"
   gemini: "gemini-2.0-flash"
+  groq: "llama-3.3-70b-versatile"
+  openrouter: "meta-llama/llama-3.1-8b-instruct:free"

@@ -10,7 +10,7 @@ Output: two CSV files per run —
 
 ## 1. What you need before starting
 
-You need at least **one** API key (you don't need all four — the tool skips any provider without a key and tells you).
+You need at least **one** API key (you don't need all of them — the tool skips any provider without a key and tells you).
 
 | Provider | Where to get a key | Free tier? |
 |---|---|---|
@@ -18,8 +18,10 @@ You need at least **one** API key (you don't need all four — the tool skips an
 | Anthropic (Claude) | https://console.anthropic.com/settings/keys | Small free credit for new accounts |
 | Perplexity | https://www.perplexity.ai/settings/api | No — pay-per-use |
 | Google (Gemini) | https://aistudio.google.com/apikey | Yes — generous free tier |
+| Groq | https://console.groq.com | Yes — free, but open-source models only (testing, not a real AI-search product) |
+| OpenRouter | https://openrouter.ai | Only `:free`-suffixed models are free; others cost the same as calling the provider directly |
 
-**Recommendation for a demo/portfolio run:** start with just **Gemini** (free) and **Anthropic** (small free credit). Add OpenAI/Perplexity once you're happy with the output.
+**Recommendation for a demo/portfolio run:** start with just **Gemini** and **Groq** (both free) to validate the whole pipeline at zero cost, then add OpenAI/Anthropic/Perplexity once you're happy with the output — those are the ones that reflect real AI-search citation behavior.
 
 You'll also need **Python 3.10+** installed on your machine. Check with:
 ```bash
@@ -61,7 +63,41 @@ The file already ships with a working example (VMware vs virtualization competit
 
 ---
 
-## 4. Run it
+## 4. Run it — Dashboard (recommended)
+
+The easiest way to use this tool: a local web dashboard where you set the
+brand, competitors, queries, providers, and API keys — and see the report —
+all in the browser, without touching `config.yaml` or `.env`.
+
+```bash
+streamlit run dashboard.py
+```
+
+This opens `http://localhost:8501` in your browser. From there:
+
+1. **Sidebar** — paste in whichever API keys you have. Kept in-memory for
+   the session by default; tick "Remember keys in a local .env file" to
+   persist them between runs.
+2. Edit **brand / aliases / competitors / queries** directly in the text areas.
+3. Tick which **providers** to run and adjust model names if needed.
+4. Click **Run Citation Check** — results stream in live, then a full
+   report appears below:
+   - **Overview** — AI Visibility % (overall citation rate), queries
+     tested, times cited, avg. first position, plus a citation-rate-by-
+     provider chart
+   - **Query Breakdown** — sortable/filterable table, one row per query
+   - **Competitors** — mention counts and share-of-voice vs your brand
+   - **Trend** — citation rate over time, built automatically from every
+     past run's scorecard CSV in `reports/` (run it weekly to build history)
+   - **Raw Data** — full table + CSV download
+   - **Errors** — any failed provider calls, isolated for debugging
+
+---
+
+## 5. Run it — Command line (alternative)
+
+If you'd rather run it headless (e.g. from a cron job or CI), edit
+`config.yaml` directly and use the CLI entry point instead of the dashboard:
 
 ```bash
 python run_tracker.py
@@ -73,7 +109,7 @@ You'll see live progress in the terminal as it queries each provider. When done,
 
 ---
 
-## 5. Reading the output
+## 6. Reading the output
 
 Open `sample_output/scorecard_example.csv` to see the format before running your first real pass:
 
@@ -89,7 +125,7 @@ Open `sample_output/scorecard_example.csv` to see the format before running your
 
 ---
 
-## 6. Verifying it works before adding real API keys
+## 7. Verifying it works before adding real API keys
 
 Run the included smoke test — it mocks all four providers (no real API calls, no cost) and checks that the query loop, error handling, brand/competitor detection, and scorecard math all produce correct results:
 
@@ -101,7 +137,7 @@ You should see 8 `[PASS]` lines ending in `=== ALL CHECKS PASSED ===`. Re-run th
 
 ---
 
-## 7. Scheduling it to run automatically (optional)
+## 8. Scheduling it to run automatically (optional)
 
 To track citation trends over time (weekly, say), add a cron job (Mac/Linux):
 
@@ -115,13 +151,13 @@ Each run creates new timestamped files in `reports/`, so nothing gets overwritte
 
 ---
 
-## 8. Extending it
+## 9. Extending it
 
 Ideas if you want to take this further:
-- **Plot trends over time** — load all the scorecard CSVs into a pandas DataFrame and chart citation_rate_pct week over week
 - **Slack/email alerts** — send a message when citation_rate_pct drops below a threshold
 - **AI Overviews specifically** — Google doesn't offer a public AI Overviews API yet, so Perplexity (which does live web browsing) is currently the closest proxy in this tool
-- **More providers** — Copilot, Grok, etc. can be added the same way: one new function in `citation_tracker/providers.py`
+- **More providers** — Copilot, Grok, etc. can be added the same way: one new function in `citation_tracker/providers.py`, then add it to `PROVIDER_FUNCTIONS` / `PROVIDER_ENV_KEYS`
+- **Multi-brand comparison** — run the dashboard once per competitor brand and compare Overview tabs side by side
 
 ---
 
@@ -129,16 +165,24 @@ Ideas if you want to take this further:
 
 ```
 ai-citation-tracker/
-├── config.yaml                  # what to track (edit this per brand)
-├── run_tracker.py                # run this to execute a pass
+├── config.yaml                  # what to track (edit this, or use the dashboard instead)
+├── dashboard.py                  # streamlit run dashboard.py — full UI, no file editing needed
+├── run_tracker.py                # CLI alternative — run this to execute a pass headlessly
 ├── requirements.txt
-├── .env.example                  # copy to .env and fill in keys
+├── .env.example                  # copy to .env and fill in keys (or use the dashboard sidebar)
 ├── citation_tracker/
-│   ├── providers.py               # API calls to each LLM
+│   ├── providers.py               # API calls to each LLM (openai, anthropic, perplexity, gemini, groq, openrouter)
 │   ├── detector.py                # citation detection logic
-│   └── tracker.py                 # orchestration + CSV output
-├── reports/                       # your run outputs land here
+│   └── tracker.py                 # orchestration + CSV output (run() for CLI, run_from_config() for dashboard)
+├── reports/                       # your run outputs land here (also powers the dashboard's Trend tab)
 └── sample_output/                 # example CSVs so you can see the format
 ```
 
 ---
+
+## For your resume / portfolio
+
+Suggested bullet:
+> Built an automated AI Citation Tracker (Python) monitoring brand visibility and citation position across ChatGPT, Claude, Perplexity, and Gemini — surfacing competitor share-of-voice in generative search responses to inform GEO strategy.
+
+Push this to a public GitHub repo and link it directly from your resume/LinkedIn — a working tool with a clean README is a much stronger signal than listing "GEO" as a skill.

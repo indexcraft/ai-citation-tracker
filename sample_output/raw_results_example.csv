@@ -1,0 +1,4 @@
+timestamp,provider,query,brand_mentioned,mention_count,first_position_pct,competitors_mentioned,snippet,response_length_chars
+20260704_100000,openai,best server virtualization platform for enterprise,True,3,12.5,Nutanix,...VMware remains the market leader...,950
+20260704_100000,openai,VMware vs Nutanix which is better for private cloud,True,5,2.0,Nutanix,...VMware vs Nutanix comparison...,1100
+20260704_100000,perplexity,best server virtualization platform for enterprise,False,0,,"Nutanix, Proxmox",,800
